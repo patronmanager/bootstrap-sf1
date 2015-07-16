@@ -46,7 +46,7 @@ module.exports = function(grunt) {
     watch: {
       less: {
         files: ['less/*.less', '!less/s1-icons.less', '!less/mapped.less'],
-        tasks: ['less:compile', 'less:namespaced'],
+        tasks: ['less:compile'],
         options: {
           livereload: true
         }
@@ -117,6 +117,12 @@ module.exports = function(grunt) {
             cwd: '<%= bowerDirectory %>/bootstrap/fonts',
             src: ['*'],
             dest: 'dist/fonts'
+          },
+          {
+            expand: true,
+            cwd: '<%= bowerDirectory %>/bootstrap/dist/js',
+            src: ['*'],
+            dest: 'dist/js'
           }
         ]
       },
@@ -135,7 +141,7 @@ module.exports = function(grunt) {
           {
             expand: true,
             cwd: 'fonts',
-            src: ['ProximaNovaSoft-Medium.ttf', 'ProximaNovaSoft-Regular.ttf', 'icon-utility.*'],
+            src: ['*'],
             dest: 'dist/fonts'
           }
         ]
@@ -147,13 +153,21 @@ module.exports = function(grunt) {
           src: ['*.less'],
           dest: 'less/generated'
         }]
+      },
+      mpos : {
+        files: [{
+          expand : true,
+          cwd: 'dist',
+          src: ['**'],
+          dest: '../patronticket-mpos/resource-bundles/BoxOfficeExpress.resource/bootstrap-sf1'
+        }]
       }
     },
     clean: {
       tmp: ['tmp'],
-      pages: ['pages']
+      pages: ['pages'],
+      dist: ['dist']
     },
-
     bump: {
       options: {
         files: ['package.json', 'bower.json'],
@@ -184,8 +198,10 @@ module.exports = function(grunt) {
   grunt.registerTask('s1variables', ['clone-s1vars', 'copy:s1less', 'clean:tmp']);
   grunt.registerTask('icons', ['build-icons-data', 'copy', 'less:compile'])
   
-  grunt.registerTask('default', ['s1variables', 'copy:bootstrap', 'copy:icons', 'copy:fonts', 'less:compile', 'less:namespaced', 'recess', 'cssmin', 'clean:pages', 'icons', 'assemble']);
+  grunt.registerTask('default', ['s1variables', 'copy:bootstrap', 'copy:icons', 'copy:fonts', 'less:compile', 'recess', 'cssmin', 'clean:pages', 'icons', 'assemble']);
   grunt.registerTask('serve', ['connect', 'watch']);
 
   grunt.registerTask('bump:gen', ['bump', 'assemble:pages']);
+  grunt.registerTask('dist-mpos', ['copy:mpos']);
+
 };
